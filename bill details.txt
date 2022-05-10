@@ -1,0 +1,139 @@
+package mysql;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTextArea;
+import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Color;
+
+public class Bill extends JFrame {
+
+	private static final String String = null;
+	private JPanel contentPane;
+	JTextArea textArea;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Bill frame = new Bill();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Bill() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 853, 718);
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.BLACK);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		textArea = new JTextArea();
+		textArea.setFont(new Font("Monospaced", Font.BOLD, 24));
+		textArea.setBounds(10, 11, 697, 519);
+		contentPane.add(textArea);
+		try {
+			String url = "jdbc:mysql://localhost:3306/bloodbank";
+			String uname = "root";
+			String password="Prathi@5*";
+			String pat=null;
+			String blgrp=null;
+			int amt = 0;
+			int Nopck = 0 ;
+			int Nopck1 = 0;
+			patientDetails d = new patientDetails();
+			String pat_ID = d.trans;
+			
+			
+			String sql = "select patient.pat_name,patient.no_of_packet,patient.bloodgroup,blood.bloodgroup,blood.no_of_packets,blood.rate from patient inner join blood where patient.bloodgroup=blood.bloodgroup ";
+			
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection(url,uname,password);
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			while(rs.next()) {
+				pat=rs.getString("pat_name");
+				Nopck1=rs.getInt("no_of_packet");
+				blgrp = rs.getString("bloodgroup");
+				amt = rs.getInt("rate");
+				Nopck=rs.getInt("no_of_packets");
+			}
+			
+			
+			
+			if(Nopck==0) {
+				JOptionPane.showMessageDialog(null,"No blood packets are available");
+			}
+			else {
+				String query = "update blood set no_of_packets='"+(Nopck-Nopck1)+"' ";
+				PreparedStatement pstmt = con.prepareStatement(query);
+				pstmt.execute();
+			}
+			
+			int amt1 = Nopck1 * amt;
+			String amount = Integer.toString(amt1);
+		String pack = Integer.toString(Nopck1);
+	String  J = Integer.toString(Nopck);
+	
+	textArea.setText(textArea.getText()+"\n"+"------------------------------------------------------------------------");
+	textArea.setText(textArea.getText()+"\n"+"                BLOODBANK                                      ");
+	textArea.setText(textArea.getText()+"\n"+"------------------------------------------------------------------------");
+	textArea.setText(textArea.getText()+"\n"+"Patient Name     :"+pat);
+	textArea.setText(textArea.getText()+"\n"+"Blood Group      :"+blgrp);
+	textArea.setText(textArea.getText()+"\n"+"Number Of Packets:"+pack);
+	textArea.setText(textArea.getText()+"\n"+"Amount           :"+amount);
+	textArea.setText(textArea.getText()+"\n");
+	textArea.setText(textArea.getText()+"\n"+"Join Hands to Help Others");
+	
+	JButton btnNewButton = new JButton("Print");
+	btnNewButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			JOptionPane.showMessageDialog(null,"Printed.................");
+		}
+	});
+	btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 21));
+	btnNewButton.setBounds(55, 588, 146, 54);
+	contentPane.add(btnNewButton);
+	
+	JButton btnBack = new JButton("Back");
+	btnBack.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			dispose();
+			HomePage m = new HomePage();
+			m.setVisible(true);
+		}
+	});
+	btnBack.setFont(new Font("Tahoma", Font.BOLD, 21));
+	btnBack.setBounds(445, 588, 146, 54);
+	contentPane.add(btnBack);
+	con.close();
+	}catch(Exception e1) {
+		JOptionPane.showMessageDialog(null,"Cant place the bill");
+	}
+	}
+}

@@ -1,0 +1,108 @@
+package mysql;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Color;
+
+public class HomePage extends JFrame {
+
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					HomePage frame = new HomePage();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public HomePage() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 996, 708);
+		contentPane = new JPanel();
+		contentPane.setBackground(new Color(178, 34, 34));
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Welcome To BLOOD BANK");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 43));
+		lblNewLabel.setBounds(197, -3, 633, 125);
+		contentPane.add(lblNewLabel);
+		
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(107, 133, 782, 493);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		JButton btnNewButton = new JButton("PatientDetails for billing");
+		btnNewButton.setForeground(new Color(255, 255, 255));
+		btnNewButton.setBackground(new Color(0, 0, 0));
+		btnNewButton.setBounds(68, 82, 633, 59);
+		panel.add(btnNewButton);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				patientDetails h = new patientDetails();
+				h.setVisible(true);
+			}
+		});
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 30));
+		
+		JButton btnDonorDetials = new JButton("Donor Detials ");
+		btnDonorDetials.setForeground(new Color(255, 255, 255));
+		btnDonorDetials.setBackground(new Color(0, 0, 0));
+		btnDonorDetials.setBounds(68, 224, 633, 59);
+		panel.add(btnDonorDetials);
+		btnDonorDetials.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				Donor n = new Donor();
+				n.setVisible(true);
+			}
+		});
+		btnDonorDetials.setFont(new Font("Tahoma", Font.BOLD, 30));
+		
+		JButton btnBloodStockDetails = new JButton("Blood Stock Details");
+		btnBloodStockDetails.setForeground(new Color(255, 255, 255));
+		btnBloodStockDetails.setBackground(new Color(0, 0, 0));
+		btnBloodStockDetails.setBounds(68, 372, 633, 59);
+		panel.add(btnBloodStockDetails);
+		btnBloodStockDetails.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				Blood b = new Blood();
+				b.setVisible(true);
+			}
+		});
+		btnBloodStockDetails.setFont(new Font("Tahoma", Font.BOLD, 30));
+		
+		JLabel lblNewLabel_1 = new JLabel("");
+		ImageIcon img = new ImageIcon(this.getClass().getResource("/blood.png"));
+		lblNewLabel_1.setIcon(img);
+		lblNewLabel_1.setBounds(0, 0, 782, 493);
+		panel.add(lblNewLabel_1);
+	}
+}

@@ -1,0 +1,282 @@
+package mysql;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+
+import net.proteanit.sql.DbUtils;
+
+import java.awt.Font;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Color;
+
+public class Donor extends JFrame {
+
+	private JPanel contentPane;
+	private JTable table;
+	private JTextField donor_name;
+	private JTextField donor_bgrp;
+	private JTextField donor_mob;
+	private JTextField no_of_packets;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Donor frame = new Donor();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Donor() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1112, 734);
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.PINK);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(428, 11, 660, 622);
+		contentPane.add(scrollPane);
+		
+		table = new JTable();
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					int row = table.getSelectedRow();
+					String ID_ = (table.getModel().getValueAt(row, 0)).toString();
+					
+					String url="jdbc:mysql://localhost:3306/bloodbank";
+					String uname ="root";
+					String pass ="Prathi@5*";
+					String query = "select * from donor where donor_name='"+ID_+"'";
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con= DriverManager.getConnection(url,uname,pass);
+					
+					PreparedStatement pst = con.prepareStatement(query);
+					ResultSet rs = pst.executeQuery();
+					while(rs.next()) {
+						donor_name.setText(rs.getString("donor_name"));
+						donor_bgrp.setText(rs.getString("donor_bgrp"));
+						donor_mob.setText(rs.getString("donor_mob"));
+						no_of_packets.setText(rs.getString("no_of_packets"));
+						
+					}
+					
+					con.close();
+					
+				}catch(Exception e1){
+					System.out.print(e1);
+				}
+			}
+		});
+		table.setFont(new Font("Tahoma", Font.BOLD, 12));
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"New column", "New column", "New column", "New column"
+			}
+		));
+		scrollPane.setViewportView(table);
+		
+		JLabel lbl = new JLabel("donor_name");
+		lbl.setForeground(Color.BLACK);
+		lbl.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lbl.setBounds(10, 42, 140, 35);
+		contentPane.add(lbl);
+		
+		JLabel ibldonorgrp = new JLabel("donor_bgrp");
+		ibldonorgrp.setForeground(Color.BLACK);
+		ibldonorgrp.setFont(new Font("Tahoma", Font.BOLD, 20));
+		ibldonorgrp.setBounds(10, 161, 140, 35);
+		contentPane.add(ibldonorgrp);
+		
+		JLabel lblDonormob = new JLabel("donor_mob");
+		lblDonormob.setForeground(Color.BLACK);
+		lblDonormob.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblDonormob.setBounds(10, 275, 140, 35);
+		contentPane.add(lblDonormob);
+		
+		JLabel lblNoofpackets = new JLabel("no_of_packets");
+		lblNoofpackets.setForeground(Color.BLACK);
+		lblNoofpackets.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblNoofpackets.setBounds(10, 396, 186, 35);
+		contentPane.add(lblNoofpackets);
+		
+		donor_name = new JTextField();
+		donor_name.setFont(new Font("Tahoma", Font.BOLD, 15));
+		donor_name.setBounds(160, 46, 257, 35);
+		contentPane.add(donor_name);
+		donor_name.setColumns(10);
+		
+		donor_bgrp = new JTextField();
+		donor_bgrp.setFont(new Font("Tahoma", Font.BOLD, 15));
+		donor_bgrp.setColumns(10);
+		donor_bgrp.setBounds(160, 172, 257, 35);
+		contentPane.add(donor_bgrp);
+		
+		donor_mob = new JTextField();
+		donor_mob.setFont(new Font("Tahoma", Font.BOLD, 15));
+		donor_mob.setColumns(10);
+		donor_mob.setBounds(160, 275, 257, 35);
+		contentPane.add(donor_mob);
+		
+		no_of_packets = new JTextField();
+		no_of_packets.setFont(new Font("Tahoma", Font.BOLD, 15));
+		no_of_packets.setColumns(10);
+		no_of_packets.setBounds(174, 396, 243, 35);
+		contentPane.add(no_of_packets);
+		
+		JButton btnNewButton = new JButton("insert");
+		btnNewButton.setBackground(Color.GRAY);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sql="insert into donor values(?,?,?,?);";
+				 try
+			 {
+				    String url="jdbc:mysql://localhost:3306/bloodbank";
+					String uname ="root";
+					String pass ="Prathi@5*";
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con= DriverManager.getConnection(url,uname,pass);
+					
+					PreparedStatement pstmt=con.prepareStatement(sql);
+					pstmt.setString(1,donor_name.getText());
+					pstmt.setString(2,donor_bgrp.getText());
+					pstmt.setString(3,donor_mob.getText());
+					pstmt.setString(4,no_of_packets.getText());
+					int x=pstmt.executeUpdate();
+					if(x==1)
+						JOptionPane.showMessageDialog(null,"Insertion successful");
+					String pack = no_of_packets.getText();
+					int add = Integer.parseInt(pack);
+					String bld = donor_bgrp.getText();
+					int c = Integer.parseInt(pack);
+					int bpact;
+					String sql1 = "select no_of_packets from blood";
+					 Statement st = con.createStatement();
+					 ResultSet rs = st.executeQuery(sql1);
+					 while(rs.next()) {
+						 bpact = rs.getInt("no_of_packets");
+					
+					String query = "update blood set no_of_packets='"+(bpact+add)+"'"
+							+ "where bloodgroup = '"+bld+"' ";
+					PreparedStatement pstmt1 = con.prepareStatement(query);
+					pstmt1.execute();
+					 }
+					
+					
+					con.close();
+			 }
+			 catch(Exception e1)
+			 {
+				 System.out.println(e1);
+			 }
+			}
+		});
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnNewButton.setBounds(10, 505, 111, 42);
+		contentPane.add(btnNewButton);
+		
+		JButton btnUpdate = new JButton("update");
+		btnUpdate.setBackground(Color.GRAY);
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int row = table.getSelectedRow();
+					String PID_ = (table.getModel().getValueAt(row, 0)).toString();
+					
+					String url="jdbc:mysql://localhost:3306/bloodbank";
+					String uname ="root";
+					String pass ="Prathi@5*";
+					String sql = "update donor set donor_name ='"+donor_name.getText()+"',donor_bgrp='"+donor_bgrp.getText()+"',donor_mob='"+donor_mob.getText()+"',no_of_packets='"+no_of_packets.getText()+"'"
+							+ "where donor_name = '"+PID_+"'";
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con= DriverManager.getConnection(url,uname,pass);
+					
+					PreparedStatement pstmt=con.prepareStatement(sql);
+					pstmt.execute();
+					JOptionPane.showMessageDialog(null,"Updated Successfully");
+					con.close();
+					}catch(Exception e1){
+						System.out.print(e1);
+					}
+			}
+		});
+		btnUpdate.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnUpdate.setBounds(10, 614, 111, 42);
+		contentPane.add(btnUpdate);
+		
+		JButton btnView = new JButton("view");
+		btnView.setBackground(Color.GRAY);
+		btnView.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnView.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String url="jdbc:mysql://localhost:3306/bloodbank";
+					String uname ="root";
+					String pass ="Prathi@5*";
+					String query = "select * from donor";
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con= DriverManager.getConnection(url,uname,pass);
+					Statement st=con.createStatement();
+					ResultSet rs=st.executeQuery(query);
+					
+					table.setModel(DbUtils.resultSetToTableModel(rs));
+					
+					st.close();
+					con.close();
+					}catch(Exception e1) {
+						System.out.println(e1);
+					}
+			}
+		});
+		btnView.setBounds(261, 505, 111, 42);
+		contentPane.add(btnView);
+		
+		JButton btnBack = new JButton("back");
+		btnBack.setBackground(Color.GRAY);
+		btnBack.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				HomePage p = new HomePage();
+				p.setVisible(true);
+			}
+		});
+		btnBack.setBounds(261, 614, 111, 42);
+		contentPane.add(btnBack);
+	}
+}

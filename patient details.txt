@@ -1,0 +1,319 @@
+package mysql;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTable;
+import javax.swing.JSpinner;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+
+import net.proteanit.sql.DbUtils;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Color;
+
+public class patientDetails extends JFrame {
+
+	private JPanel contentPane;
+	private JTable table;
+	private JTextField pat_id;
+	private JTextField pat_name;
+	private JTextField pat_mob;
+	private JTextField pat_email;
+	private JTextField purpose;
+	private JTextField bloodgroup;
+	private JTextField no_of_packet;
+	String trans;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					patientDetails frame = new patientDetails();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public patientDetails() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1322, 882);
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.DARK_GRAY);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(502, 41, 767, 648);
+		contentPane.add(scrollPane);
+		
+		table = new JTable();
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					int row = table.getSelectedRow();
+					String ID_ = (table.getModel().getValueAt(row, 0)).toString();
+					
+					String url="jdbc:mysql://localhost:3306/bloodbank";
+					String uname ="root";
+					String pass ="Prathi@5*";
+					String query = "select * from patient where pat_id='"+ID_+"'";
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con= DriverManager.getConnection(url,uname,pass);
+					
+					PreparedStatement pst = con.prepareStatement(query);
+					ResultSet rs = pst.executeQuery();
+					while(rs.next()) {
+						pat_id.setText(rs.getString("pat_id"));
+						pat_name.setText(rs.getString("pat_name"));
+						pat_mob.setText(rs.getString("pat_no"));
+						pat_email.setText(rs.getString("pat_email"));
+						purpose.setText(rs.getString("purpose"));
+						bloodgroup.setText(rs.getString("bloodgroup"));
+						no_of_packet.setText(rs.getString("no_of_packets"));
+					}
+					
+					con.close();
+					
+				}catch(Exception e1){
+					System.out.print(e1);
+				}
+			}
+			
+		});
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"New column", "New column", "New column", "New column", "New column"
+			}
+		));
+		scrollPane.setViewportView(table);
+		
+		JLabel lblNewLabel = new JLabel("pat_id");
+		lblNewLabel.setForeground(Color.WHITE);
+		lblNewLabel.setBackground(Color.WHITE);
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lblNewLabel.setBounds(10, 41, 160, 50);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("pat_name");
+		lblNewLabel_1.setForeground(Color.WHITE);
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lblNewLabel_1.setBounds(10, 115, 176, 50);
+		contentPane.add(lblNewLabel_1);
+		
+		JLabel lblNewLabel_2 = new JLabel("pat_mob");
+		lblNewLabel_2.setForeground(Color.WHITE);
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lblNewLabel_2.setBounds(10, 189, 146, 50);
+		contentPane.add(lblNewLabel_2);
+		
+		JLabel lblNewLabel_3 = new JLabel("pat_email");
+		lblNewLabel_3.setForeground(Color.WHITE);
+		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lblNewLabel_3.setBounds(10, 272, 160, 50);
+		contentPane.add(lblNewLabel_3);
+		
+		JLabel lblNewLabel_4 = new JLabel("purpose");
+		lblNewLabel_4.setForeground(Color.WHITE);
+		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lblNewLabel_4.setBounds(10, 357, 138, 50);
+		contentPane.add(lblNewLabel_4);
+		
+		pat_id = new JTextField();
+		pat_id.setFont(new Font("Tahoma", Font.BOLD, 14));
+		pat_id.setBounds(166, 41, 258, 41);
+		contentPane.add(pat_id);
+		pat_id.setColumns(10);
+		
+		pat_name = new JTextField();
+		pat_name.setFont(new Font("Tahoma", Font.BOLD, 14));
+		pat_name.setColumns(10);
+		pat_name.setBounds(166, 115, 258, 41);
+		contentPane.add(pat_name);
+		
+		pat_mob = new JTextField();
+		pat_mob.setFont(new Font("Tahoma", Font.BOLD, 14));
+		pat_mob.setColumns(10);
+		pat_mob.setBounds(166, 198, 258, 41);
+		contentPane.add(pat_mob);
+		
+		pat_email = new JTextField();
+		pat_email.setFont(new Font("Tahoma", Font.BOLD, 14));
+		pat_email.setColumns(10);
+		pat_email.setBounds(166, 281, 258, 41);
+		contentPane.add(pat_email);
+		
+		purpose = new JTextField();
+		purpose.setFont(new Font("Tahoma", Font.BOLD, 14));
+		purpose.setColumns(10);
+		purpose.setBounds(166, 366, 258, 41);
+		contentPane.add(purpose);
+		
+		JButton btnNewButton = new JButton("view");
+		btnNewButton.setBackground(Color.LIGHT_GRAY);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String url="jdbc:mysql://localhost:3306/bloodbank";
+					String uname ="root";
+					String pass ="Prathi@5*";
+					String query = "select * from patient";
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con= DriverManager.getConnection(url,uname,pass);
+					Statement st=con.createStatement();
+					ResultSet rs=st.executeQuery(query);
+					
+					table.setModel(DbUtils.resultSetToTableModel(rs));
+					
+					st.close();
+					con.close();
+					}catch(Exception e1) {
+						System.out.println(e1);
+					}
+				}
+			});
+		
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnNewButton.setBounds(34, 543, 136, 41);
+		contentPane.add(btnNewButton);
+		
+		JButton btnUpdate = new JButton("update");
+		btnUpdate.setBackground(Color.LIGHT_GRAY);
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int row = table.getSelectedRow();
+					String PID_ = (table.getModel().getValueAt(row, 0)).toString();
+					
+					String url="jdbc:mysql://localhost:3306/bloodbank";
+					String uname ="root";
+					String pass ="Prathi@5*";
+					String sql = "update patient set pat_name ='"+pat_name.getText()+"',pat_no='"+pat_mob.getText()+"',pat_email='"+pat_email.getText()+"',purpose='"+purpose.getText()+"',bloodgroup='"+bloodgroup.getText()+"',no_of_packets='"+no_of_packet.getText()+"'"
+					+ "where pat_id = '"+PID_+"'";
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con= DriverManager.getConnection(url,uname,pass);
+					
+					PreparedStatement pstmt=con.prepareStatement(sql);
+					pstmt.execute();
+					JOptionPane.showMessageDialog(null,"Updated Successfully");
+					con.close();
+					}catch(Exception e1){
+						System.out.print(e1);
+					}
+			}
+		});
+		btnUpdate.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnUpdate.setBounds(34, 627, 136, 41);
+		contentPane.add(btnUpdate);
+		
+		JButton btnNewButton_1 = new JButton("back");
+		btnNewButton_1.setBackground(Color.LIGHT_GRAY);
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnNewButton_1.setBounds(286, 622, 138, 50);
+		contentPane.add(btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("insert");
+		btnNewButton_2.setBackground(Color.LIGHT_GRAY);
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sql="insert into patient values(?,?,?,?,?,?,?);";
+				 try
+			 {
+				    String url="jdbc:mysql://localhost:3306/bloodbank";
+					String uname ="root";
+					String pass ="Prathi@5*";
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con= DriverManager.getConnection(url,uname,pass);
+					trans = pat_id.getText();
+					PreparedStatement pstmt=con.prepareStatement(sql);
+					pstmt.setString(1,pat_id.getText());
+					pstmt.setString(2,pat_name.getText());
+					pstmt.setString(3,pat_mob.getText());
+					pstmt.setString(4,pat_email.getText());
+					pstmt.setString(5,purpose.getText());
+					pstmt.setString(6,bloodgroup.getText());
+					pstmt.setString(7,no_of_packet.getText());
+			 
+
+					int x=pstmt.executeUpdate();
+					if(x==1) {
+						JOptionPane.showMessageDialog(null,"Insertion successful");
+						dispose();
+						Bill b = new Bill();
+						b.setVisible(true);
+					}
+					con.close();
+			 }
+			 catch(Exception e1)
+			 {
+				 System.out.println(e1);
+			 }
+			}
+		});
+		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnNewButton_2.setBounds(286, 543, 146, 36);
+		contentPane.add(btnNewButton_2);
+		
+		JLabel lblNewLabel_4_1 = new JLabel("bloodgrp");
+		lblNewLabel_4_1.setForeground(Color.WHITE);
+		lblNewLabel_4_1.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lblNewLabel_4_1.setBounds(10, 421, 138, 50);
+		contentPane.add(lblNewLabel_4_1);
+		
+		JLabel lblNewLabel_4_2 = new JLabel("Packets");
+		lblNewLabel_4_2.setForeground(Color.WHITE);
+		lblNewLabel_4_2.setFont(new Font("Tahoma", Font.BOLD, 25));
+		lblNewLabel_4_2.setBounds(10, 482, 138, 50);
+		contentPane.add(lblNewLabel_4_2);
+		
+		bloodgroup = new JTextField();
+		bloodgroup.setFont(new Font("Tahoma", Font.BOLD, 14));
+		bloodgroup.setColumns(10);
+		bloodgroup.setBounds(166, 430, 258, 41);
+		contentPane.add(bloodgroup);
+		
+		no_of_packet = new JTextField();
+		no_of_packet.setFont(new Font("Tahoma", Font.BOLD, 14));
+		no_of_packet.setColumns(10);
+		no_of_packet.setBounds(166, 482, 258, 41);
+		contentPane.add(no_of_packet);
+}
+	}
+
